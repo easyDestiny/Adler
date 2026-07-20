@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>소독된 손끝의 갈증 — Dr. Adler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Serif+KR:wght@200;400;600;700&display=swap" rel="stylesheet">
+<style>
+  @font-face{
+    font-family:'RIDIBatang';
+    src:url('fonts/RIDIBatang.otf') format('opentype');
+    font-display:swap;
+  }
+
+  :root{
+    --paper:#eee8dd;
+    --paper-dim:#ddd5c6;
+    --ink:#26221f;
+    --rose:#8a7472;
+    --rose-soft:#a3908d;
+    --steel:#7c8a8f;
+    --gold:#8a7472;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Noto Serif KR', serif;
+    overflow-x:hidden;
+    line-height:1.8;
+    position:relative;
+  }
+  ::selection{background:var(--rose); color:var(--paper);}
+  .disp{font-family:'RIDIBatang', 'Nanum Myeongjo', serif;}
+
+  /* ---------- fixed background image (sits behind every section) ---------- */
+  #sceneBg{
+    position:fixed; inset:0; z-index:0;
+    background-image:url('img/stetho.jpg');
+    background-size:cover;
+    background-position:60% 35%;
+    filter:brightness(0.88) saturate(0.42) grayscale(0.15);
+  }
+  /* paper tint over the photo for body sections, so text stays legible while texture shows through */
+  .paper-tint{ background:rgba(238,232,221,0.8); }
+  /* darker veil specifically behind the cover so title text stays legible against the raw photo */
+  #coverVeil{
+    position:absolute; inset:0; z-index:1;
+    background:linear-gradient(rgba(8,6,5,0.5), rgba(8,6,5,0.82));
+  }
+  .cover-content{ position:relative; z-index:3; }
+
+  /* ---------- cover ---------- */
+  #cover{
+    height:100vh;
+    height:100dvh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .eyebrow{
+    font-family:'Nanum Myeongjo', serif;
+    letter-spacing:0.4em;
+    font-size:10px;
+    color:var(--rose-soft);
+    margin-bottom:16px;
+    text-transform:uppercase;
+  }
+  .cover-title{
+    font-family:'RIDIBatang', serif;
+    font-size:clamp(19px, 4.2vw, 27px);
+    letter-spacing:0.1em;
+    line-height:1.7;
+    color:#e2d9cb;
+    text-shadow:0 2px 14px rgba(0,0,0,0.5);
+    position:relative;
+  }
+  .cover-sub{
+    margin-top:18px;
+    font-family:'RIDIBatang', serif;
+    font-style:italic;
+    font-size:12.5px;
+    color:#cdc4b3;
+    max-width:380px;
+    padding:0 24px;
+  }
+  .cover-credit{
+    position:absolute; bottom:22px; font-size:9px; letter-spacing:0.24em; color:#948a78; z-index:3;
+  }
+  .cover-credit span::before{content:"#"; color:var(--rose-soft); margin-right:2px;}
+  .cover-credit span + span{margin-left:18px;}
+
+  /* ---------- ruled paper texture behind body sections ---------- */
+  .ruled-bg{ position:relative; }
+  .ruled-bg::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 34px,
+      rgba(29,26,23,0.055) 34px, rgba(29,26,23,0.055) 35px
+    );
+    pointer-events:none;
+  }
+
+  /* ---------- section shell ---------- */
+  section{
+    position:relative;
+    z-index:1;
+    padding:88px 22px;
+    max-width:680px;
+    margin:0 auto;
+  }
+  .sec-label{
+    font-family:'Nanum Myeongjo', serif;
+    font-size:10.5px;
+    letter-spacing:0.36em;
+    color:var(--rose);
+    text-transform:uppercase;
+    display:flex; align-items:center; gap:14px;
+    margin-bottom:12px;
+  }
+  .sec-label::after{
+    content:""; flex:1; height:1px; background:linear-gradient(to right, var(--rose), transparent);
+  }
+  h2.sec-title{
+    font-family:'RIDIBatang', serif;
+    font-size:clamp(19px, 4.4vw, 25px);
+    margin-bottom:32px;
+    letter-spacing:0.05em;
+  }
+
+  /* ---------- 외관 ---------- */
+  .portrait-wrap{
+    width:100%; max-width:280px; margin:0 auto 20px;
+    position:relative;
+  }
+  .portrait-wrap img{
+    width:100%; display:block;
+    filter:sepia(0.06) contrast(1.02);
+  }
+  .portrait-frame{
+    position:absolute; inset:-9px;
+    border:1px solid var(--ink);
+    pointer-events:none;
+    opacity:0.65;
+  }
+  .portrait-cap{
+    text-align:center; font-size:10px; letter-spacing:0.12em; color:#7a746a; margin-top:12px;
+    line-height:1.9;
+  }
+  .portrait-cap a{ color:var(--rose); border-bottom:1px solid var(--rose-soft); }
+
+  /* ---------- info list (기본 정보) — one flowing grouped block, no boxes ---------- */
+  .info-list{
+    margin:8px 0 4px;
+    border-top:1px solid rgba(29,26,23,0.18);
+    border-bottom:1px solid rgba(29,26,23,0.18);
+  }
+  .info-row{
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    gap:4px; padding:13px 0;
+  }
+  .info-row + .info-row{ border-top:1px solid rgba(29,26,23,0.08); }
+  .info-row .k{
+    font-family:'Nanum Myeongjo', serif;
+    font-size:9.5px; letter-spacing:0.22em; color:#948c7c;
+    white-space:nowrap;
+  }
+  .info-row .v{
+    font-family:'RIDIBatang', serif;
+    font-size:15px; color:var(--ink); text-align:right;
+  }
+  .info-row .v small{ display:block; font-family:'Noto Serif KR',serif; font-size:10px; font-weight:400; color:#847d6f; margin-top:1px; }
+
+  /* ---------- merged 기본정보 + 외관 two-column layout ---------- */
+  .merge-grid{
+    display:grid; grid-template-columns:1.15fr 0.85fr; gap:6vw;
+    align-items:start;
+  }
+  .merge-col .portrait-wrap{ margin:0; max-width:100%; }
+
+  .prose{ font-size:13px; color:#312d28; margin-bottom:18px; }
+
+  /* ---------- 성격 tags — flowing grouped line, no boxes ---------- */
+  .tag-row{
+    font-family:'RIDIBatang', serif;
+    font-size:14px; color:var(--rose);
+    line-height:2.1;
+    margin:4px 0 26px;
+  }
+  .tag-row span:not(:last-child)::after{ content:" · "; color:#9c8f88; }
+
+  /* ---------- item cards (특징) ---------- */
+  .dossier{ counter-reset:roman; }
+  .entry-row{
+    counter-increment:roman;
+    padding:26px 0;
+    position:relative;
+  }
+  .entry-row .name{
+    font-family:'Nanum Myeongjo', serif; font-weight:700;
+    letter-spacing:0.03em; color:var(--rose); font-size:11.5px;
+    display:flex; align-items:baseline; gap:10px; margin-bottom:9px;
+  }
+  .entry-row .name::before{
+    content: counter(roman, lower-roman) ".";
+    font-family:'RIDIBatang', serif; font-style:italic; font-weight:400;
+    color:var(--rose); font-size:15px; min-width:20px;
+  }
+  .entry-row .desc{
+    font-size:12.5px; color:#3a352e;
+    text-align:justify; text-justify:inter-word;
+    padding-left:30px;
+    -webkit-hyphens:auto; hyphens:auto;
+  }
+  .entry-row .speech{ font-family:'RIDIBatang', serif; font-style:italic; color:var(--rose); font-size:13px; }
+
+  /* ---------- secret / family+health dark section ---------- */
+  #secret{
+    background:rgba(29,26,23,0.94);
+    color:var(--paper-dim);
+  }
+  #secret::before{ background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 34px, rgba(242,236,225,0.05) 34px, rgba(242,236,225,0.05) 35px); }
+  #secret .sec-label{ color:var(--rose-soft); }
+  #secret .sec-label::after{ background:linear-gradient(to right, var(--rose-soft), transparent); }
+  #secret h2.sec-title{ color:var(--paper); }
+  #secret .entry-row .desc{ color:#c9c1b2; }
+  #secret .entry-row .name{ color:var(--rose-soft); }
+  #secret .entry-row .name::before{ color:var(--rose-soft); }
+
+  footer{
+    padding:60px 22px 80px; text-align:center;
+    font-family:'Nanum Myeongjo', serif; font-size:11px; letter-spacing:0.3em; color:#8a8377;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+  @media (max-width:480px){
+    section{ padding:64px 20px; }
+    .info-row{ padding:11px 0; }
+    .portrait-wrap{ max-width:190px; }
+    .merge-grid{ grid-template-columns:1fr; gap:36px; }
+    .cover-title{ font-size:clamp(17px, 5.4vw, 22px); }
+    .cover-sub{ font-size:11.5px; }
+    .sec-label{ letter-spacing:0.28em; }
+    h2.sec-title{ margin-bottom:26px; }
+    .entry-row{ padding:20px 0; }
+    .entry-row .desc{ padding-left:24px; }
+    #sceneBg{ background-position:50% 30%; }
+  }
+
+  @media (hover:none) and (pointer:coarse){
+    /* touch devices: avoid text getting selected accidentally on tap-hold */
+    section{ -webkit-tap-highlight-color:transparent; }
+  }
+
+  /* ---------- intro glitch overlay ---------- */
+  #intro{
+    position:fixed; inset:0; z-index:1000;
+    background:#000;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition:opacity 0.9s ease;
+  }
+  #intro.hide{ opacity:0; pointer-events:none; }
+  .glitch-wrap{ position:relative; padding:0 12vw; text-align:center; }
+  .glitch{
+    font-family:'RIDIBatang', serif;
+    font-style:italic;
+    font-size:clamp(13px, 3vw, 15px);
+    line-height:1.9;
+    color:#cdc4b3;
+    letter-spacing:0.02em;
+    position:relative;
+    opacity:0;
+  }
+  .glitch.show{
+    animation:glitchIn 0.7s steps(1,end) forwards;
+  }
+  .glitch.show::before, .glitch.show::after{
+    content:attr(data-text);
+    position:absolute; left:0; top:0; width:100%;
+    pointer-events:none;
+  }
+  .glitch.show::before{
+    color:#8a97a0;
+    animation:glitchSliceA 0.7s steps(1,end) forwards;
+  }
+  .glitch.show::after{
+    color:#a3757e;
+    animation:glitchSliceB 0.7s steps(1,end) forwards;
+  }
+  @keyframes glitchIn{
+    0%{ opacity:0; }
+    10%{ opacity:1; transform:translateX(-2px); }
+    18%{ opacity:0.2; transform:translateX(2px); }
+    26%{ opacity:1; transform:translateX(0); }
+    40%{ opacity:0.3; }
+    46%{ opacity:1; }
+    100%{ opacity:1; transform:translateX(0); }
+  }
+  @keyframes glitchSliceA{
+    0%{ opacity:0; clip-path:inset(0 0 100% 0); }
+    10%{ opacity:0.7; clip-path:inset(15% 0 55% 0); transform:translateX(-3px); }
+    22%{ opacity:0; clip-path:inset(60% 0 10% 0); transform:translateX(2px); }
+    40%{ opacity:0.5; clip-path:inset(30% 0 40% 0); transform:translateX(-2px); }
+    100%{ opacity:0; }
+  }
+  @keyframes glitchSliceB{
+    0%{ opacity:0; clip-path:inset(100% 0 0 0); }
+    14%{ opacity:0.6; clip-path:inset(50% 0 20% 0); transform:translateX(3px); }
+    28%{ opacity:0; clip-path:inset(5% 0 70% 0); transform:translateX(-2px); }
+    44%{ opacity:0.4; clip-path:inset(45% 0 30% 0); transform:translateX(2px); }
+    100%{ opacity:0; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .glitch{ animation:none !important; opacity:1; }
+    .glitch::before, .glitch::after{ animation:none !important; content:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <div class="glitch-wrap">
+    <div class="glitch" id="glitchText" data-text=""></div>
+  </div>
+</div>
+
+<audio id="bgm" loop>
+  <source id="bgmSource" type="audio/mpeg" src="audio/bgm.mp3">
+</audio>
+
+<div id="sceneBg"></div>
+
+<section id="cover" class="ruled-bg">
+  <div id="coverVeil"></div>
+  <div class="cover-content">
+    <div class="eyebrow">Dr. Adler · Sebastian Adler</div>
+    <h1 class="cover-title">소독된 손끝의 갈증</h1>
+    <p class="cover-sub">…모두 생각해 보시길, 긴 여운을 느낀 적 있나?</p>
+  </div>
+  <div class="cover-credit"><span>프로필</span><span>계약자_자기소개</span></div>
+</section>
+
+<section class="ruled-bg paper-tint">
+  <div class="merge-grid">
+    <div class="merge-col">
+      <div class="sec-label">기본 정보</div>
+      <h2 class="sec-title">Basic</h2>
+      <div class="info-list">
+        <div class="info-row"><div class="k">NAME</div><div class="v">Dr. Adler<small>Sebastian Adler · Basti</small></div></div>
+        <div class="info-row"><div class="k">AGE</div><div class="v">32</div></div>
+        <div class="info-row"><div class="k">GENDER</div><div class="v">남성</div></div>
+        <div class="info-row"><div class="k">HEIGHT / WEIGHT</div><div class="v">188 · 67</div></div>
+        <div class="info-row"><div class="k">BIRTH</div><div class="v">11월 3일</div></div>
+        <div class="info-row"><div class="k">BLOOD TYPE</div><div class="v">O형</div></div>
+      </div>
+    </div>
+    <div class="merge-col">
+      <div class="sec-label">외관</div>
+      <h2 class="sec-title">Appearance</h2>
+      <div class="portrait-wrap">
+        <img src="img/portrait.png" alt="Dr. Adler 외관">
+        <div class="portrait-frame"></div>
+      </div>
+      <div class="portrait-cap">
+        배경 투명화 버전은 아래 링크에 보관되어 있음<br>
+        <a href="https://drive.google.com/drive/folders/1H3xsyY_bpV3pGJS3HMUQY_at02ZBX9pS" target="_blank" rel="noopener">Drive Folder →</a>
+      </div>
+    </div>
+  </div>
+  <p class="prose" style="margin-top:40px;">짧게 친 흑발은 손질보다 방치에 가깝고, 두 쪽 눈 모두 늘 반쯤 감겨 있어 표정을 읽기 어렵다. 입가의 옅은 점과 늘 걸려 있는 웃음기가 진지함을 흐린다.</p>
+  <p class="prose">흰 셔츠 위에 딸기 자수가 놓인 앞치마를 두르는 게 습관인데, 정작 손에는 늘 링거 폴대나 튜브 같은 임상적 소품을 쥐고 있어 위생적인 것과 그렇지 않은 것의 경계가 모호하다.</p>
+</section>
+
+<section class="ruled-bg paper-tint">
+  <div class="sec-label">성격</div>
+  <h2 class="sec-title">Personality</h2>
+  <div class="tag-row">
+    <span>장난스러운</span><span>종잡을 수 없는</span><span>음침한</span><span>능청스러운</span><span>결벽적인</span><span>정밀한</span><span>은근히 집요한</span><span>관찰력이 지나치게 좋은</span>
+  </div>
+  <p class="prose">겉으로는 장난스럽고 종잡을 수 없는 사람처럼 보인다. 진지한 이야기를 하다가도 실없는 농담으로 흐름을 끊고, 상대가 당황하는 걸 즐기듯 능청스럽게 웃어넘긴다.</p>
+  <p class="prose">정밀함에 대한 강박에 가까운 결벽이 있어서 자신의 작업(조향)에서만큼은 한 치의 오차도 용납하지 못하면서도, 정작 자기 자신의 감정이나 욕망은 아무렇지 않게 방치해두는 이중적인 면모를 보인다.</p>
+  <p class="prose">음침한 구석이 있다는 건 본인도 부정하지 않는데, 그걸 굳이 숨기려 하기보다 오히려 그 음침함을 능청스러운 태도로 포장해서 상대를 혼란스럽게 만드는 쪽을 즐긴다.</p>
+</section>
+
+<section class="ruled-bg paper-tint">
+  <div class="sec-label">특징</div>
+  <h2 class="sec-title">Notes</h2>
+  <div class="dossier">
+  <div class="entry-row">
+    <div class="name">습관</div>
+    <div class="desc">조향한 향수 라벨에 아무도 못 알아듣는 라틴어 병명을 붙인다. 손님을 보면 진단하듯 어울리는 향을 처방한다.</div>
+  </div>
+  <div class="entry-row">
+    <div class="name">취미</div>
+    <div class="desc">오래된 의학 서적 수집, 밤늦게 혼자 향 조합 실험</div>
+  </div>
+  <div class="entry-row">
+    <div class="name">말버릇</div>
+    <div class="desc"><span class="speech">"그거 냄새 나는거 보이나?"</span><br><span class="speech">"진단 내려주지."</span></div>
+  </div>
+  <div class="entry-row">
+    <div class="name">혈액형</div>
+    <div class="desc">O형. 피에 그렇게 집착하면서 정작 자기 피는 누구에게나 나눠줄 수 있는 흔한 O형이라는 것에 대해 아무 생각도 안 든다고 말한다. 뭐, 아이러니하다면 아이러니한 부분.</div>
+  </div>
+  </div>
+</section>
+
+<section id="secret" class="ruled-bg">
+  <div class="sec-label">가족 · 건강</div>
+  <h2 class="sec-title">Private</h2>
+  <div class="dossier">
+  <div class="entry-row">
+    <div class="name">가족관계 · 혈연</div>
+    <div class="desc">대대로 의사 집안 출신. 아버지, 할아버지 모두 외과의였고 집안 전체가 당연하다는 듯 의학 계열로 흘러갔다. 아들러 혼자만 그 흐름에서 이탈해 조향사가 됐다는 게 집안 내에서는 일종의 스캔들처럼 여겨진다.</div>
+  </div>
+  <div class="entry-row">
+    <div class="name">건강상태</div>
+    <div class="desc">손 떨림이 완전히 낫지 않아 정밀 작업에서도 미세한 오차가 남는다. 후각이 비정상적으로 예민해서 남들은 못 맡는 냄새까지 감지하는데, 이게 축복인지 저주인지 본인도 헷갈려 한다. 가끔 특정 냄새(피 계열)에 노출되면 순간적으로 어떠한 것이든 집중력이 흐트러질 정도로 반응이 격해지는데, 겉으로는 티가 안 나게 잘 감춘다. 불면 증상이 있어 밤에 향 조합에 몰두하는 습관도 여기서 기인한다.</div>
+  </div>
+  </div>
+</section>
+
+<footer>end of chart — dr. adler, 032</footer>
+
+<script>
+  (function(){
+    const line1 = "아니 그러니까···. 하, 이해를 못하나?";
+    const line2 = "예술적 감각, 의학적 감각. 어디가 부족한건지.";
+    const intro = document.getElementById('intro');
+    const textEl = document.getElementById('glitchText');
+    const bgm = document.getElementById('bgm');
+    let stage = 0; // 0 = nothing shown, 1 = line1 shown, 2 = line2 shown
+    let line2Timer = null;
+    let dismissed = false;
+
+    function showLine(text){
+      textEl.classList.remove('show');
+      textEl.setAttribute('data-text', text);
+      textEl.textContent = text;
+      // restart the glitch-in animation
+      void textEl.offsetWidth;
+      textEl.classList.add('show');
+    }
+
+    function toLine1(){
+      if(stage !== 0) return;
+      stage = 1;
+      showLine(line1);
+      line2Timer = setTimeout(toLine2, 2000);
+    }
+
+    function toLine2(){
+      if(stage !== 1) return;
+      stage = 2;
+      showLine(line2);
+      setTimeout(dismiss, 2200);
+    }
+
+    let audioStarted = false;
+    function startAudio(){
+      if(audioStarted) return;
+      audioStarted = true;
+      if(bgm.querySelector('source')){
+        bgm.play().catch(function(){});
+      }
+    }
+
+    function dismiss(){
+      if(dismissed) return;
+      dismissed = true;
+      intro.classList.add('hide');
+      setTimeout(function(){ intro.style.display = 'none'; }, 950);
+    }
+
+    setTimeout(toLine1, 1000);
+
+    intro.addEventListener('click', function(){
+      startAudio();
+      if(stage === 1){
+        clearTimeout(line2Timer);
+        toLine2();
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
